@@ -9,13 +9,8 @@ public class Account {
         this.balance = balance;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public int getBalance() {
-        return balance;
-    }
+    public String getId() { return id; }
+    public int getBalance() { return balance; }
 
     public void credit(int amount) {
         this.balance += amount;

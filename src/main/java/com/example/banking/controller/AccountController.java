@@ -2,6 +2,7 @@ package com.example.banking.controller;
 
 import com.example.banking.service.AccountNotFoundException;
 import com.example.banking.service.AccountService;
+import com.example.banking.service.InvalidTransactionException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,6 +41,8 @@ public class AccountController {
             return ResponseEntity.status(HttpStatus.CREATED).body(result);
         } catch (AccountNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(0);
+        } catch (InvalidTransactionException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(0);
         }
     }
 }

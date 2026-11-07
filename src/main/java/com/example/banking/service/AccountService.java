@@ -42,6 +42,10 @@ public class AccountService {
         String destinationId = (String) payload.get("destination");
         int amount = (int) payload.get("amount");
 
+        if (amount < 0) {
+            throw new InvalidTransactionException("Deposit amount cannot be negative");
+        }
+
         Account account = accounts.computeIfAbsent(destinationId, id -> new Account(id, 0));
         account.credit(amount);
 
@@ -52,9 +56,17 @@ public class AccountService {
         String originId = (String) payload.get("origin");
         int amount = (int) payload.get("amount");
 
+        if (amount < 0) {
+            throw new InvalidTransactionException("Withdraw amount cannot be negative");
+        }
+
         Account account = accounts.get(originId);
         if (account == null) {
             throw new AccountNotFoundException("Account not found");
+        }
+
+        if (account.getBalance() - amount < 0) {
+            throw new InvalidTransactionException("Insufficient funds");
         }
 
         account.debit(amount);
@@ -67,9 +79,17 @@ public class AccountService {
         String destinationId = (String) payload.get("destination");
         int amount = (int) payload.get("amount");
 
+        if (amount < 0) {
+            throw new InvalidTransactionException("Transfer amount cannot be negative");
+        }
+
         Account originAccount = accounts.get(originId);
         if (originAccount == null) {
             throw new AccountNotFoundException("Origin account not found");
+        }
+
+        if (originAccount.getBalance() - amount < 0) {
+            throw new InvalidTransactionException("Insufficient funds in origin account");
         }
 
         Account destinationAccount = accounts.computeIfAbsent(destinationId, id -> new Account(id, 0));
